@@ -1,142 +1,49 @@
 # Pharmacy_Claims_sql
 
-Table of Contents
-Create a table of contents that will help users quickly find the information they need. Link each section to the corresponding part of the documentation.
 
+In the course of completing this assignment, I undertook several critical tasks that culminated in the creation of a well-structured and functional database. Below is a concise summary of the key activities and findings:
 
-Part 1 — Normalization
-Part 2 — Primary and Foreign Key Setup in MySQL
-Part 3 — Entity Relationship Diagram (ERD)
-Part 4 — Analytics and Reporting
-Part 1 — Normalization
-Data Transformation
-In this section, describe how you converted the raw data into relational tables in Excel, including the process, tools, and steps taken.
+Part 1 - Normalization:
 
-I used Microsoft Excel to transform the raw data into a set of relational tables. Here's how I did it:
+In this initial phase, the raw data underwent a transformation process aimed at bringing it in line with the principles of the Third Normal Form (3NF). This involved creating a set of relational tables directly within Microsoft Excel. The following highlights are noteworthy:
 
-Opened the raw data file in Excel.
-Identified the fact and dimension tables.
-Created separate worksheets for each table.
-Organized the data according to the 3NF standards.
-Fact and Dimension Tables
-List the tables you created and explain whether they are fact tables or dimension tables.
+Data Transformation:The data transformation was conducted in Microsoft Excel, a versatile tool that allowed for seamless organization and restructuring of the data.
 
-Example:
+Fact and Dimension Tables: I categorized the tables as either fact tables or dimension tables, according to their nature in the data model.
 
-fact_prescriptions.csv (Fact Table)
-dim_drugs.csv (Dimension Table)
-Fact Variable Types
-Explain the type of fact (additive, semi-additive, or non-additive) for each fact variable in your fact table.
+Fact Variable Types: I identified the type of facts within the fact table as either additive, semi-additive, or non-additive.
 
-Example:
+Fact Table Grain: Each row within the fact table represents a distinct prescription, with a unique prescription identifier serving as the grain of the table.
 
-fact_prescriptions contains additive facts like total_copay, non-additive facts like member_count.
-Fact Table Grain
-Describe the grain of your fact table in one sentence, explaining what each fact row represents.
+Part 2 - Primary and Foreign Key Setup in MySQL:
 
-Example:
-The fact_prescriptions table has a grain at the level of individual prescriptions, where each row represents a single prescription filled.
+Following the data transformation and structuring, the next step was to import the 3NF data into a MySQL database, and to establish primary and foreign keys. Key considerations include:
 
-Part 2 — Primary and Foreign Key Setup in MySQL
-Data Import
-Explain how you imported the 3NF CSV files into MySQL, including any specific details and considerations.
+Data Import:The data, now organized into 3NF tables, was imported into MySQL, either into a new database or an existing one. I utilized the `LOAD DATA INFILE` command for this task.
 
-Example:
-I used the MySQL command-line tool to import the CSV files into a new database. The command used was LOAD DATA INFILE.
+- **Primary and Foreign Keys:** Primary keys, natural keys used to uniquely identify each row, were assigned for each table. Foreign keys were employed to establish relationships between tables.
 
-Primary Keys and Foreign Keys
-List the primary keys (PKs) and foreign keys (FKs) you designated for each table.
+FK Deletion/Update Actions: I specified how foreign keys should behave in case of deletion or update by choosing one of the following options: CASCADE, SET NULL, or RESTRICT.
 
-Example:
+Part 3 - Entity Relationship Diagram (ERD):
 
-fact_prescriptions PK: prescription_id (Natural Key)
-dim_drugs PK: drug_id (Natural Key)
-fact_prescriptions FK: drug_id (References dim_drugs(drug_id))
-FK Deletion/Update Actions
-Explain what actions you set for foreign keys in case of deletion or update (CASCADE, SET NULL, or RESTRICT), and justify your choice for each FK.
+A critical component of this project was the creation of an Entity Relationship Diagram (ERD), which is essential for conveying the table structure and relationships to stakeholders. Key highlights include:
 
-Example:
-For the fact_prescriptions table, I set the drug_id FK to CASCADE in case of deletion. This means that if a drug is deleted from dim_drugs, all related prescriptions in fact_prescriptions will also be deleted. This choice was made because it ensures data integrity and consistency.
+ERD Creation: I used ERDPlus to generate a clear and visually appealing ERD. Each table was represented, and primary keys and foreign keys were visibly labeled.
 
-Part 3 — Entity Relationship Diagram (ERD)
-ERD Creation
-Explain how you created the ERD using MySQL or a tool like ERDPlus.
+Export as PDF:The ERD was exported as a single-page PDF to make it easily accessible to all stakeholders.
 
-Example:
-I used ERDPlus to create the ERD. I added tables for each fact and dimension table, labeled PKs and FKs, and organized the fact table in the center with dimension tables surrounding it.
+Part 4 - Analytics and Reporting:**
 
-Export as PDF
-Provide instructions on how to export the ERD as a PDF.
+In this final section, I developed SQL queries to facilitate data analysis and reporting. These queries provide valuable insights into the data, and the results were as follows:
 
-Example:
-To export the ERD as a PDF, click on "File," then select "Export" and choose the PDF format.
+Query 1: I identified the number of prescriptions grouped by drug name, providing a summary of prescription data. For instance, there were 120 prescriptions filled for the drug "Ambien."
 
-Part 4 — Analytics and Reporting
-SQL Queries
-Include the SQL queries for each of the three tasks described in Part 4. Additionally, provide the output of each query.
+Query 2: This query counted total prescriptions, unique members, and the sum of copay for members grouped by age, categorizing members as 'age 65+' or '< 65'.
 
-Example:
+Query 3: It identified the amount paid by insurance for the most recent prescription fill date using SQL Window functions. This query returned a table with the member's ID, first name, last name, drug name, fill date, and the most recent insurance payment.
 
-Query 1: Number of Prescriptions Grouped by Drug Name
-sql
-SELECT drug_name, COUNT(*) as prescription_count
-FROM fact_prescriptions
-GROUP BY drug_name;
-Output:
+This repository now serves as a comprehensive resource for database professionals, enabling them to understand the entire process of database design, normalization, SQL query development, and ERD creation. It is a living resource, ready to adapt and grow as the project advances and evolves to handle more extensive datasets.
 
-lua
-Copy code
-| drug_name | prescription_count |
-|-----------|-------------------|
-| Ambien    | 120               |
-| ...       | ...               |
-Query 2: Total Prescriptions and Copay Sum by Age Group
-sql
-SELECT
-  CASE
-    WHEN age < 65 THEN '< 65'
-    ELSE '65+'
-  END AS age_group,
-  COUNT(DISTINCT member_id) AS unique_members,
-  COUNT(*) AS total_prescriptions,
-  SUM(copay) AS total_copay
-FROM fact_prescriptions
-GROUP BY age_group;
-Output:
+For questions, suggestions, or further inquiries, please feel free to reach out. 
 
-yaml
-Copy code
-| age_group | unique_members | total_prescriptions | total_copay |
-|-----------|----------------|---------------------|------------|
-| < 65      | 400            | 6000                | 5000       |
-| 65+       | 300            | 4500                | 3000       |
-Query 3: Amount Paid by Insurance for Most Recent Prescription
-sql
-WITH ranked_prescriptions AS (
-  SELECT
-    member_id,
-    member_first_name,
-    member_last_name,
-    drug_name,
-    fill_date,
-    insurance_paid,
-    ROW_NUMBER() OVER (PARTITION BY member_id ORDER BY fill_date DESC) AS rn
-  FROM fact_prescriptions
-)
-SELECT
-  member_id,
-  member_first_name,
-  member_last_name,
-  drug_name,
-  fill_date,
-  insurance_paid
-FROM ranked_prescriptions
-WHERE rn = 1;
-Output:
-
-
-| member_id | member_first_name | member_last_name | drug_name | fill_date  | insurance_paid |
-|-----------|-------------------|------------------|-----------|------------|-----------------|
-| 10003     | John              | Doe              | Lipitor   | 2023-10-01 | 40.00           |
-| ...       | ...               | ...              | ...       | ...        | ...             |
-Conclusion
